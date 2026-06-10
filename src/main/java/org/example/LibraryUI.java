@@ -16,6 +16,10 @@ public class LibraryUI {
         DefaultTableModel model = new DefaultTableModel(columns, 0);
 
         JTable table = new JTable(model);
+        javax.swing.table.DefaultTableCellRenderer headerRenderer =
+                (javax.swing.table.DefaultTableCellRenderer)
+                        table.getTableHeader().getDefaultRenderer();
+        headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
         table.getColumnModel().getColumn(3)
                         .setCellRenderer(new MultiLineCellRenderer());
         table.getColumnModel().getColumn(0).setCellRenderer(new MultiLineCellRenderer()); //Title
@@ -56,6 +60,7 @@ public class LibraryUI {
         JButton filterThemesButton = new JButton("Filter themes");
 
         JLabel statusLabel = new JLabel();
+        statusLabel.setPreferredSize(new Dimension(220, 30));
         updateTable(model, library, null, statusLabel);
 
         addButton.addActionListener(e -> {
@@ -137,7 +142,7 @@ public class LibraryUI {
                     book.getThemes(),
                     book.getDisplayType(),
                     book.getSeriesInfo(),
-                    book.getFormat(),
+                    book.getDisplayFormat(),
                     book.getStatus()
             });
 
@@ -210,8 +215,8 @@ public class LibraryUI {
             model.setValueAt(book.getThemes(), selectedRow, 3);
             model.setValueAt(book.getDisplayType(), selectedRow, 4);
             model.setValueAt(book.getSeriesInfo(), selectedRow, 5);
-            model.setValueAt(book.getFormat(), selectedRow, 6);
-            model.setValueAt(book.getStatus(), selectedRow, 7);
+            model.setValueAt(book.getDisplayFormat(), selectedRow, 6);
+            model.setValueAt(book.getDisplayStatus(), selectedRow, 7);
 
             CsvLibraryStorage.saveBooks(library.getBooks());
 
@@ -263,19 +268,27 @@ public class LibraryUI {
         backgroundPanel.add(scrollPane, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
-        buttonPanel.add(addButton);
-        buttonPanel.add(editButton);
-        buttonPanel.add(deleteButton);
-        buttonPanel.add(showAllButton);
-        buttonPanel.add(showReadButton);
-        buttonPanel.add(showUnreadButton);
-        buttonPanel.add(new JLabel("Genre:"));
-        buttonPanel.add(genreFilterField);
-        buttonPanel.add(filterGenreButton);
-        buttonPanel.add(new JLabel("Theme:"));
-        buttonPanel.add(themeFilterField);
-        buttonPanel.add(filterThemesButton);
-        buttonPanel.add(statusLabel);
+        buttonPanel.setLayout(new GridLayout(2, 1));
+
+        JPanel firstRow = new JPanel();
+        firstRow.add(addButton);
+        firstRow.add(editButton);
+        firstRow.add(deleteButton);
+        firstRow.add(showAllButton);
+        firstRow.add(showReadButton);
+        firstRow.add(showUnreadButton);
+
+        JPanel secondRow = new JPanel();
+        secondRow.add(new JLabel("Genre:"));
+        secondRow.add(genreFilterField);
+        secondRow.add(filterGenreButton);
+        secondRow.add(new JLabel("Theme:"));
+        secondRow.add(themeFilterField);
+        secondRow.add(filterThemesButton);
+        secondRow.add(statusLabel);
+
+        buttonPanel.add(firstRow);
+        buttonPanel.add(secondRow);
 
         backgroundPanel.add(buttonPanel, BorderLayout.SOUTH);
 
@@ -304,8 +317,8 @@ public class LibraryUI {
                         book.getThemes(),
                         book.getDisplayType(),
                         book.getSeriesInfo(),
-                        book.getFormat(),
-                        book.getStatus()
+                        book.getDisplayFormat(),
+                        book.getDisplayStatus()
                 });
                 visibleCount++;
             }
@@ -336,7 +349,7 @@ public class LibraryUI {
                         book.getThemes(),
                         book.getDisplayType(),
                         book.getSeriesInfo(),
-                        book.getFormat(),
+                        book.getDisplayFormat(),
                         book.getStatus()
                 });
                 visibleCount++;
